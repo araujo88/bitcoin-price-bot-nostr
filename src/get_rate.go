@@ -8,10 +8,14 @@ import (
 	"net/http"
 )
 
-func getRate() float64 {
+const BASE_URL = "https://rest.coinapi.io/v1/exchangerate/BTC/"
+
+var API_KEY = goDotEnvVariable("API_KEY")
+
+func getRate(currency string) float64 {
 
 	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodGet, URL, nil)
+	req, err := http.NewRequest(http.MethodGet, BASE_URL+currency, nil)
 	var response []byte
 
 	req.Header.Set("X-CoinAPI-Key", API_KEY)

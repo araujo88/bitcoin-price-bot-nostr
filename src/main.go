@@ -1,16 +1,18 @@
 package main
 
-import "log"
-
-const URL = "https://rest.coinapi.io/v1/exchangerate/BTC/USD"
-
-var API_KEY = goDotEnvVariable("API_KEY")
+import (
+	"log"
+	"time"
+)
 
 func main() {
 
-	err := doPost(getRate())
+	for {
+		err := doPost()
 
-	if err != nil {
-		log.Fatal(err)
+		if err != nil {
+			log.Fatal(err)
+		}
+		time.Sleep(1 * time.Hour)
 	}
 }

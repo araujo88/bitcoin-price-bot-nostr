@@ -12,7 +12,7 @@ import (
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
-func doPost(rate float64) error {
+func doPost() error {
 	profile := ""
 	cfg, err := loadConfig(profile)
 
@@ -37,7 +37,12 @@ func doPost(rate float64) error {
 		return err
 	}
 
-	price_string := fmt.Sprintf("%.2f", rate)
+	rate_usd := 1 / getRate("USD") / 0.00000001
+	rate_eur := 1 / getRate("EUR") / 0.00000001
+	rate_jpy := 1 / getRate("JPY") / 0.00000001
+	rate_gbp := 1 / getRate("GBP") / 0.00000001
+
+	price_string := fmt.Sprintf("1 USD = %.0f sats\n1 EUR = %0.f sats\n1 JPY = %0.f sats\n1 GBP = %0.f sats", rate_usd, rate_eur, rate_jpy, rate_gbp)
 	ev.Content = price_string
 
 	ev.CreatedAt = time.Now()
