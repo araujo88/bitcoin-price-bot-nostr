@@ -41,8 +41,9 @@ func doPost() error {
 	rate_eur := 1 / getRate("EUR") / 0.00000001
 	rate_jpy := 1 / getRate("JPY") / 0.00000001
 	rate_gbp := 1 / getRate("GBP") / 0.00000001
+	rate_brl := 1 / getRate("BRL") / 0.00000001
 
-	price_string := fmt.Sprintf("1 USD = %.0f sats\n1 EUR = %0.f sats\n1 JPY = %0.f sats\n1 GBP = %0.f sats", rate_usd, rate_eur, rate_jpy, rate_gbp)
+	price_string := fmt.Sprintf("1 USD = %.0f sats\n1 EUR = %0.f sats\n1 JPY = %0.f sats\n1 GBP = %0.f sats\n1 BRL = %0.f sats", rate_usd, rate_eur, rate_jpy, rate_gbp, rate_brl)
 	ev.Content = price_string
 
 	ev.CreatedAt = time.Now()
