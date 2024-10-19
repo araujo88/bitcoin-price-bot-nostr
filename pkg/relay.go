@@ -1,4 +1,4 @@
-package main
+package nostrbot
 
 type Relay struct {
 	Read   bool `json:"read"`

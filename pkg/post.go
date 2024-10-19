@@ -1,4 +1,4 @@
-package main
+package nostrbot
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
-func doPost() error {
+func DoPost() error {
 	profile := ""
 	cfg, err := loadConfig(profile)
 
