@@ -1,5 +1,8 @@
 # Bitcoin Price Bot for Nostr
 
+[![license](https://img.shields.io/badge/license-GPL-green)](https://raw.githubusercontent.com/araujo88/bitcoin-price-bot-nostr/main/LICENSE)
+[![build](https://github.com/araujo88/bitcoin-price-bot-nostr/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/araujo88/bitcoin-price-bot-nostr/actions/workflows/go.yml)
+
 This bot posts Bitcoin price information to Nostr relays at regular intervals.
 
 ## Setup
