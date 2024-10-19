@@ -4,13 +4,13 @@ import (
 	"log"
 	"time"
 
-	nostrbot "github.com/araujo88/bitcoin-price-bot-nostr/pkg"
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/post"
 )
 
 func main() {
 
 	for {
-		err := nostrbot.DoPost()
+		err := post.Post()
 
 		if err != nil {
 			log.Fatal(err)

@@ -1,4 +1,4 @@
-package main
+package profile
 
 type Profile struct {
 	Website     string `json:"website"`

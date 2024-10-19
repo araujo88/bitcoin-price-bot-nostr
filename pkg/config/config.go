@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"context"
@@ -10,18 +10,20 @@ import (
 	"sync"
 	"time"
 
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/profile"
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/relay"
 	"github.com/nbd-wtf/go-nostr"
 )
 
 type Config struct {
-	Relays     map[string]Relay   `json:"relays"`
-	Follows    map[string]Profile `json:"follows"`
-	PrivateKey string             `json:"privatekey"`
-	Updated    time.Time          `json:"updated"`
-	verbose    bool
+	Relays     map[string]relay.Relay     `json:"relays"`
+	Follows    map[string]profile.Profile `json:"follows"`
+	PrivateKey string                     `json:"privatekey"`
+	Updated    time.Time                  `json:"updated"`
+	Verbose    bool
 }
 
-func loadConfig(profile string) (*Config, error) {
+func LoadConfig(profile string) (*Config, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		return nil, err
@@ -59,7 +61,7 @@ func loadConfig(profile string) (*Config, error) {
 	return &cfg, nil
 }
 
-func (cfg *Config) FindRelay(r Relay) *nostr.Relay {
+func (cfg *Config) FindRelay(r relay.Relay) *nostr.Relay {
 	for k, v := range cfg.Relays {
 		if r.Write && !v.Write {
 			continue
@@ -73,7 +75,7 @@ func (cfg *Config) FindRelay(r Relay) *nostr.Relay {
 		ctx := context.WithValue(context.Background(), "url", k)
 		relay, err := nostr.RelayConnect(ctx, k)
 		if err != nil {
-			if cfg.verbose {
+			if cfg.Verbose {
 				fmt.Fprintln(os.Stderr, err.Error())
 			}
 			continue
@@ -83,7 +85,7 @@ func (cfg *Config) FindRelay(r Relay) *nostr.Relay {
 	return nil
 }
 
-func (cfg *Config) Do(r Relay, f func(*nostr.Relay)) {
+func (cfg *Config) Do(r relay.Relay, f func(*nostr.Relay)) {
 	var wg sync.WaitGroup
 	for k, v := range cfg.Relays {
 		if r.Write && !v.Write {
@@ -96,12 +98,12 @@ func (cfg *Config) Do(r Relay, f func(*nostr.Relay)) {
 			continue
 		}
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, k string, v Relay) {
+		go func(wg *sync.WaitGroup, k string, v relay.Relay) {
 			defer wg.Done()
 			ctx := context.WithValue(context.Background(), "url", k)
 			relay, err := nostr.RelayConnect(ctx, k)
 			if err != nil {
-				if cfg.verbose {
+				if cfg.Verbose {
 					fmt.Fprintln(os.Stderr, err)
 				}
 				return

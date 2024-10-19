@@ -1,4 +1,4 @@
-package main
+package btcrate
 
 import (
 	"encoding/json"
@@ -6,13 +6,16 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/config"
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/message"
 )
 
 const BASE_URL = "https://rest.coinapi.io/v1/exchangerate/BTC/"
 
-var API_KEY = goDotEnvVariable("API_KEY")
+var API_KEY = config.GetDotEnvVariable("API_KEY")
 
-func getRate(currency string) float64 {
+func FetchRate(currency string) float64 {
 
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodGet, BASE_URL+currency, nil)
@@ -39,7 +42,7 @@ func getRate(currency string) float64 {
 		fmt.Printf("Error: status code %d", res.StatusCode)
 	}
 
-	message := Message{}
+	message := message.Message{}
 
 	err = json.Unmarshal(response, &message)
 

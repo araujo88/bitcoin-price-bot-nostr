@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"log"
@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func goDotEnvVariable(key string) string {
+func GetDotEnvVariable(key string) string {
 
 	// load .env file
 	err := godotenv.Load(".env")

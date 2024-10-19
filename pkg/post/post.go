@@ -1,4 +1,4 @@
-package nostrbot
+package post
 
 import (
 	"context"
@@ -8,13 +8,16 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/btcrate"
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/config"
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/relay"
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
-func DoPost() error {
+func Post() error {
 	profile := ""
-	cfg, err := loadConfig(profile)
+	cfg, err := config.LoadConfig(profile)
 
 	if err != nil {
 		return err
@@ -37,11 +40,11 @@ func DoPost() error {
 		return err
 	}
 
-	rate_usd := 1 / getRate("USD") / 0.00000001
-	rate_eur := 1 / getRate("EUR") / 0.00000001
-	rate_jpy := 1 / getRate("JPY") / 0.00000001
-	rate_gbp := 1 / getRate("GBP") / 0.00000001
-	rate_brl := 1 / getRate("BRL") / 0.00000001
+	rate_usd := 1 / btcrate.FetchRate("USD") / 0.00000001
+	rate_eur := 1 / btcrate.FetchRate("EUR") / 0.00000001
+	rate_jpy := 1 / btcrate.FetchRate("JPY") / 0.00000001
+	rate_gbp := 1 / btcrate.FetchRate("GBP") / 0.00000001
+	rate_brl := 1 / btcrate.FetchRate("BRL") / 0.00000001
 
 	price_string := fmt.Sprintf("1 USD = %.0f sats\n1 EUR = %0.f sats\n1 JPY = %0.f sats\n1 GBP = %0.f sats\n1 BRL = %0.f sats", rate_usd, rate_eur, rate_jpy, rate_gbp, rate_brl)
 	ev.Content = price_string
@@ -51,9 +54,9 @@ func DoPost() error {
 	ev.Sign(sk)
 
 	var success atomic.Int64
-	cfg.Do(Relay{Write: true}, func(relay *nostr.Relay) {
+	cfg.Do(relay.Relay{Write: true}, func(relay *nostr.Relay) {
 		status := relay.Publish(context.Background(), ev)
-		if cfg.verbose {
+		if cfg.Verbose {
 			fmt.Fprintln(os.Stderr, relay.URL, status)
 		}
 		if status != nostr.PublishStatusFailed {
