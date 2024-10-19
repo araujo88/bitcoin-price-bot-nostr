@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,7 +47,7 @@ func loadConfig(profile string) (*Config, error) {
 	}
 	os.MkdirAll(filepath.Dir(fp), 0700)
 
-	b, err := ioutil.ReadFile(fp)
+	b, err := os.ReadFile(fp)
 	if err != nil {
 		return nil, err
 	}
@@ -112,24 +111,4 @@ func (cfg *Config) Do(r Relay, f func(*nostr.Relay)) {
 		}(&wg, k, v)
 	}
 	wg.Wait()
-}
-
-func (cfg *Config) save(profile string) error {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		return err
-	}
-	dir = filepath.Join(dir, "algia")
-
-	var fp string
-	if profile == "" {
-		fp = filepath.Join(dir, "config.json")
-	} else {
-		fp = filepath.Join(dir, "config-"+profile+".json")
-	}
-	b, err := json.MarshalIndent(&cfg, "", "  ")
-	if err != nil {
-		return err
-	}
-	return ioutil.WriteFile(fp, b, 0644)
 }
