@@ -52,7 +52,7 @@ func FetchRate(currency string) (float64, error) {
 	url := BASE_URL + "exchangerate/BTC/" + currency
 	response, err := makeRequest(url)
 	if err != nil {
-		return 0, fmt.Errorf("error fetching currency %s: %w", currency, err)
+		return 0, fmt.Errorf("error fetching rate for currency %s: %w", currency, err)
 	}
 
 	var message responses.CurrencyRate
@@ -72,7 +72,7 @@ func FetchDailyVariation(currency string) (float64, error) {
 
 	response, err := makeRequest(url)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("error daily variation for currency %s: %w", currency, err)
 	}
 
 	if len(response) == 0 {
