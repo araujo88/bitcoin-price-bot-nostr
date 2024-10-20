@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"sync/atomic"
 	"time"
 
@@ -14,6 +15,10 @@ import (
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
+
+func formatWithSeparator(value float64) string {
+	return strconv.FormatFloat(value, 'f', 0, 64)
+}
 
 func Post() error {
 	profile := ""
@@ -68,12 +73,12 @@ func Post() error {
 		return err
 	}
 
-	content := fmt.Sprintf(`1 BTC = %.0f USD (%.2f %%)\n
-	1 BTC = %0.f EUR (%.2f %%)\n
-	1 BTC = %0.f BRL (%.2f %%)\n`,
-		rate_usd, daily_variation_usd,
-		rate_eur, daily_variation_eur,
-		rate_brl, daily_variation_brl)
+	content := fmt.Sprintf(`1 BTC = %s USD (%.2f %%)
+	1 BTC = %s EUR (%.2f %%)
+	1 BTC = %s BRL (%.2f %%)`,
+		formatWithSeparator(rate_usd), daily_variation_usd,
+		formatWithSeparator(rate_eur), daily_variation_eur,
+		formatWithSeparator(rate_brl), daily_variation_brl)
 
 	ev.Content = content
 
