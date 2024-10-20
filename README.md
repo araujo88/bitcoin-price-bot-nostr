@@ -52,7 +52,7 @@ To run the bot:
 go run main.go
 ```
 
-The bot will fetch Bitcoin prices for USD, EUR, JPY, GBP, and BRL every hour and post them to the configured Nostr relays.
+The bot will fetch Bitcoin prices for USD, EUR and BRL daily and post them to the configured Nostr relays.
 
 ## Configuration
 

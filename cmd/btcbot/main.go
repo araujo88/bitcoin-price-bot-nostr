@@ -15,6 +15,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		time.Sleep(1 * time.Hour)
+		time.Sleep(24 * time.Hour)
 	}
 }
