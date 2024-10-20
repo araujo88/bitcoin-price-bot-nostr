@@ -52,7 +52,7 @@ func FetchRate(currency string) (float64, error) {
 	url := BASE_URL + "exchangerate/BTC/" + currency
 	response, err := makeRequest(url)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("error fetching currency %s: %w", currency, err)
 	}
 
 	var message responses.CurrencyRate
