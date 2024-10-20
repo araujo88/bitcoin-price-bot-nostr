@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/config"
 	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/responses"
@@ -59,7 +60,8 @@ func FetchRate(currency string) (float64, error) {
 
 // FetchDailyVariation retrieves the daily variation in percentage of the Bitcoin price for a specified currency
 func FetchDailyVariation(currency string) (float64, error) {
-	url := fmt.Sprintf("%sohlcv/BTC/%s/latest?period_id=1DAY&limit=1", BASE_URL, currency)
+	symbolID := fmt.Sprintf("BITSTAMP_SPOT_BTC_%s", currency) // Adjust the exchange as needed
+	url := fmt.Sprintf("%sohlcv/%s/history?period_id=1DAY&time_start=%s&limit=1", BASE_URL, symbolID, time.Now().Format("2006-01-02T15:04:05"))
 	response, err := makeRequest(url)
 	if err != nil {
 		return 0, err
