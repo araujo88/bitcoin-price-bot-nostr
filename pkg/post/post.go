@@ -42,30 +42,30 @@ func Post() error {
 
 	rate_usd, err := coinapi.FetchRate("USD")
 	if err != nil {
-		return errors.New("error fetching rate for USD")
+		return err
 	}
 	rate_eur, err := coinapi.FetchRate("EUR")
 	if err != nil {
-		return errors.New("error fetching rate for EUR")
+		return err
 	}
 	rate_brl, err := coinapi.FetchRate("BRL")
 	if err != nil {
-		return errors.New("error fetching rate for BRL")
+		return err
 	}
 
 	daily_variation_usd, err := coinapi.FetchDailyVariation("USD")
 	if err != nil {
-		return errors.New("error fetching daily vartion for USD")
+		return err
 	}
 
 	daily_variation_eur, err := coinapi.FetchDailyVariation("EUR")
 	if err != nil {
-		return errors.New("error fetching daily vartion for EUR")
+		return err
 	}
 
 	daily_variation_brl, err := coinapi.FetchDailyVariation("BRL")
 	if err != nil {
-		return errors.New("error fetching daily vartion for BRL")
+		return err
 	}
 
 	content := fmt.Sprintf(`1 BTC = %.0f USD (%.2f %%)\n
