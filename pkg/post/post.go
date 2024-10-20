@@ -1,6 +1,7 @@
 package post
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -17,7 +18,29 @@ import (
 )
 
 func formatWithSeparator(value float64) string {
-	return strconv.FormatFloat(value, 'f', 0, 64)
+	// Convert number to string without decimals
+	str := strconv.FormatFloat(value, 'f', 0, 64)
+	if len(str) <= 3 {
+		return str
+	}
+
+	// Reverse the string to start placing commas every three digits
+	n := len(str)
+	var buffer bytes.Buffer
+	for i := n - 1; i >= 0; i-- {
+		buffer.WriteByte(str[i])
+		if (n-i)%3 == 0 && i != 0 {
+			buffer.WriteByte(',')
+		}
+	}
+
+	// Reverse the string back to the original order
+	runes := bytes.Runes(buffer.Bytes())
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+
+	return string(runes)
 }
 
 func Post() error {
