@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/config"
@@ -64,13 +65,18 @@ func FetchRate(currency string) (float64, error) {
 
 // FetchDailyVariation retrieves the daily variation in percentage of the Bitcoin price for a specified currency
 func FetchDailyVariation(currency string) (float64, error) {
-	symbolID := fmt.Sprintf("BITSTAMP_SPOT_BTC_%s", currency)               // Adjust the exchange as needed
-	yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02T00:00:00") // Format yesterday's date in ISO 8601 format
+	currency = strings.ToUpper(currency)
+	symbolID := fmt.Sprintf("BITSTAMP_SPOT_BTC_%s", currency)
+	yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02T00:00:00")
 	url := fmt.Sprintf("%sohlcv/%s/history?period_id=1DAY&time_start=%s&limit=1", BASE_URL, symbolID, yesterday)
 
 	response, err := makeRequest(url)
 	if err != nil {
 		return 0, err
+	}
+
+	if len(response) == 0 {
+		return 0, fmt.Errorf("no response data")
 	}
 
 	var data []responses.OHLCVData
@@ -80,6 +86,9 @@ func FetchDailyVariation(currency string) (float64, error) {
 
 	if len(data) > 0 {
 		ohlcv := data[0]
+		if ohlcv.PriceOpen == 0 {
+			return 0, fmt.Errorf("price open is zero, cannot calculate variation")
+		}
 		variation := ((ohlcv.PriceClose - ohlcv.PriceOpen) / ohlcv.PriceOpen) * 100
 		return variation, nil
 	}
