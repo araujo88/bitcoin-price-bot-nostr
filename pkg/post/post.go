@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/btcrate"
+	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/coinapi"
 	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/config"
 	"github.com/araujo88/bitcoin-price-bot-nostr/pkg/relay"
 	"github.com/nbd-wtf/go-nostr"
@@ -40,14 +40,42 @@ func Post() error {
 		return err
 	}
 
-	rate_usd := 1 / btcrate.FetchRate("USD") / 0.00000001
-	rate_eur := 1 / btcrate.FetchRate("EUR") / 0.00000001
-	rate_jpy := 1 / btcrate.FetchRate("JPY") / 0.00000001
-	rate_gbp := 1 / btcrate.FetchRate("GBP") / 0.00000001
-	rate_brl := 1 / btcrate.FetchRate("BRL") / 0.00000001
+	rate_usd, err := coinapi.FetchRate("USD")
+	if err != nil {
+		return errors.New("error fetching rate for USD")
+	}
+	rate_eur, err := coinapi.FetchRate("EUR")
+	if err != nil {
+		return errors.New("error fetching rate for EUR")
+	}
+	rate_brl, err := coinapi.FetchRate("BRL")
+	if err != nil {
+		return errors.New("error fetching rate for BRL")
+	}
 
-	price_string := fmt.Sprintf("1 USD = %.0f sats\n1 EUR = %0.f sats\n1 JPY = %0.f sats\n1 GBP = %0.f sats\n1 BRL = %0.f sats", rate_usd, rate_eur, rate_jpy, rate_gbp, rate_brl)
-	ev.Content = price_string
+	daily_variation_usd, err := coinapi.FetchDailyVariation("USD")
+	if err != nil {
+		return errors.New("error fetching daily vartion for USD")
+	}
+
+	daily_variation_eur, err := coinapi.FetchDailyVariation("EUR")
+	if err != nil {
+		return errors.New("error fetching daily vartion for EUR")
+	}
+
+	daily_variation_brl, err := coinapi.FetchDailyVariation("BRL")
+	if err != nil {
+		return errors.New("error fetching daily vartion for BRL")
+	}
+
+	content := fmt.Sprintf(`1 BTC = %.0f USD (%.2f %%)\n
+	1 BTC = %0.f EUR (%.2f %%)\n
+	1 BTC = %0.f BRL (%.2f %%)\n`,
+		rate_usd, daily_variation_usd,
+		rate_eur, daily_variation_eur,
+		rate_brl, daily_variation_brl)
+
+	ev.Content = content
 
 	ev.CreatedAt = time.Now()
 	ev.Kind = nostr.KindTextNote
