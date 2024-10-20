@@ -31,6 +31,7 @@ func makeRequest(url string) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		fmt.Println(resp.Body)
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
