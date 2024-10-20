@@ -53,17 +53,17 @@ func Post() error {
 		return err
 	}
 
-	daily_variation_usd, err := coinapi.FetchDailyVariation("USD")
+	daily_variation_usd, err := coinapi.FetchDailyVariation("BITSTAMP", "USD")
 	if err != nil {
 		return err
 	}
 
-	daily_variation_eur, err := coinapi.FetchDailyVariation("EUR")
+	daily_variation_eur, err := coinapi.FetchDailyVariation("BITSTAMP", "EUR")
 	if err != nil {
 		return err
 	}
 
-	daily_variation_brl, err := coinapi.FetchDailyVariation("BRL")
+	daily_variation_brl, err := coinapi.FetchDailyVariation("BINANCE", "BRL")
 	if err != nil {
 		return err
 	}
