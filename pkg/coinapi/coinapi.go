@@ -66,7 +66,7 @@ func FetchRate(currency string) (float64, error) {
 // FetchDailyVariation retrieves the daily variation in percentage of the Bitcoin price for a specified currency
 func FetchDailyVariation(currency string) (float64, error) {
 	currency = strings.ToUpper(currency)
-	symbolID := fmt.Sprintf("BINANCE_SPOT_BTC_%s", currency)
+	symbolID := fmt.Sprintf("BITSTAMP_SPOT_BTC_%s", currency)
 	yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02T00:00:00")
 	url := fmt.Sprintf("%sohlcv/%s/history?period_id=1DAY&time_start=%s&limit=1", BASE_URL, symbolID, yesterday)
 
